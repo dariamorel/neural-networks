@@ -11,6 +11,14 @@ public:
         data_ = new T[capacity_];
     }
 
+    Vector(size_t size):capacity_(1), size_(0) {
+        data_ = new T[capacity_];
+        while (capacity_ < size) {
+            resize();
+        }
+        size_ = size;
+    }
+
     // конструктор копирования
     Vector(const Vector& other): capacity_(other.capacity_), size_(other.size_) {
         data_ = new T[capacity_];
@@ -24,6 +32,38 @@ public:
         other.data_ = nullptr;
         other.size_ = 0;
         other.capacity_ = 0;
+    }
+
+    // Оператор присваивания копированием
+    Vector& operator=(const Vector& other) {
+        if (this != &other) {
+            delete[] data_;
+
+            capacity_ = other.capacity_;
+            size_ = other.size_;
+            data_ = new T[capacity_];
+
+            for (size_t i = 0; i < size_; ++i) {
+                data_[i] = other.data_[i];
+            }
+        }
+        return *this;
+    }
+
+    // Оператор присваивания перемещением
+    Vector& operator=(Vector&& other) noexcept {
+        if (this != &other) {
+            delete[] data_;
+
+            data_ = other.data_;
+            capacity_ = other.capacity_;
+            size_ = other.size_;
+
+            other.data_ = nullptr;
+            other.size_ = 0;
+            other.capacity_ = 0;
+        }
+        return *this;
     }
 
     ~Vector() {
